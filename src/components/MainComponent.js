@@ -11,7 +11,17 @@ import Menu from './MenuComponent';
 import DishDetail from './DishDetailComponent';
 import Contact from './ContactComponent';
 import Footer from './FooterComponent';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
+import { connect } from 'react-redux';
+
+const mapStateToProps = state => {
+  return {
+    dishes: state.dishes,
+    comments: state.comments,
+    promotions: state.promotions,
+    leaders: state.leaders
+  }
+}
 
 class Main extends Component {
   constructor(props) {
@@ -67,4 +77,4 @@ class Main extends Component {
 
 }
 
-export default Main;
+export default withRouter(connect(mapStateToProps)(Main));
