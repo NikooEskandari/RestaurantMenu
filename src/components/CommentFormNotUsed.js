@@ -1,62 +1,12 @@
 import React, { Component } from 'react';
 import {
-    Card, CardImg, CardText, CardBody,
-    CardTitle, Breadcrumb, BreadcrumbItem,
-    Modal, ModalBody, ModalHeader,
     Button, Row, Col, Label
 } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
-import { Link } from 'react-router-dom';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length >= len);
-
-function RenderDish({ dish }) {
-    if (dish == null || dish == undefined) {
-        return (
-            <div></div>
-        );
-    } else {
-        return (
-            <div className="col-md-6">
-                <Card key={dish.id}>
-                    <CardImg top src={dish.image} alt={dish.name} />
-                    <CardBody>
-                        <CardTitle>{dish.name}</CardTitle>
-                        <CardText>{dish.description}</CardText>
-                    </CardBody>
-                </Card>
-            </div>
-        );
-    }
-}
-
-function RenderComments(cms) {
-    if (cms == null || cms == undefined) {
-        return (
-            <div></div>
-        );
-    } else {
-        const comments_ul = cms.comments.map((comm) => {
-            return (
-                <div>
-                    <ul key={comm.id} className="list-unstyled">
-                        <li>{comm.comment}</li>
-                        <li>{comm.author}</li>
-                    </ul>
-                </div>
-            );
-        });
-
-        return (
-            <div className="col-md-6">
-                <h4>Comments</h4>
-                {comments_ul}                
-            </div>
-        );
-    }
-}
 
 class CommentForm extends Component {
     constructor(props) {
@@ -141,56 +91,5 @@ class CommentForm extends Component {
     }
 }
 
+export default CommentForm;
 
-class DishDetail extends Component {
-    constructor(props) {
-        super(props);
-
-        this.toggleModal = this.toggleModal.bind(this);
-
-        this.state = {
-            isModalOpen: false
-        }
-    }
-
-    toggleModal() {
-        this.setState({
-            isModalOpen: !this.state.isModalOpen
-        });
-    }
-
-    render() {
-        return (
-            <div className="container">
-                <div className="row">
-                    <Breadcrumb>
-                        <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
-                        <BreadcrumbItem active>{this.props.dish.name}</BreadcrumbItem>
-                    </Breadcrumb>
-                    <div className="col-12">
-                        <h3>{this.props.dish.name}</h3>
-                        <hr />
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-12 col-md-5 m-1">
-                        <RenderDish dish={this.props.dish} />
-                    </div>
-                    <div className="col-12 col-md-5 m-1">
-                        <RenderComments comments={this.props.comments} />
-                        <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span> Submit Comments</Button>
-                    </div>
-                    <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-                        <ModalHeader toggle={this.toggleModal}>Submit Comments</ModalHeader>
-                        <ModalBody>
-                            <CommentForm />
-                        </ModalBody>
-                    </Modal>
-                </div>
-            </div>
-        );
-    }
-
-}
-
-export default DishDetail;
