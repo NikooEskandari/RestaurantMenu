@@ -32,13 +32,13 @@ function RenderDish({ dish }) {
     }
 }
 
-function RenderComments(cms) {
+function RenderComments({ cms, addComment, dishId }) {
     if (cms == null || cms == undefined) {
         return (
             <div></div>
         );
     } else {
-        const comments_ul = cms.comments.map((comm) => {
+        const comments_ul = cms.map((comm) => {
             return (
                 <div>
                     <ul key={comm.id} className="list-unstyled">
@@ -52,7 +52,7 @@ function RenderComments(cms) {
         return (
             <div className="col-md-6">
                 <h4>Comments</h4>
-                {comments_ul}                
+                {comments_ul}
             </div>
         );
     }
@@ -67,8 +67,10 @@ class CommentForm extends Component {
     }
 
     handleSubmit(values) {
-        console.log('Current State is: ' + JSON.stringify(values));
-        alert('Current State is: ' + JSON.stringify(values));
+        console.log('values');
+        console.log(values);
+        console.log(this.props.dishId);
+        this.props.addComment(this.props.dishId, values.rating, values.name, values.message);
     }
 
     render() {
@@ -95,7 +97,7 @@ class CommentForm extends Component {
                             <Row>
                                 <Label htmlFor="Name" md={10}>Your Name</Label>
                             </Row>
-                            <Row className="form-group">                             
+                            <Row className="form-group">
                                 <Col md={10}>
                                     <Control.text model=".name" id="name" name="Name"
                                         placeholder="Your Name"
@@ -177,13 +179,13 @@ class DishDetail extends Component {
                         <RenderDish dish={this.props.dish} />
                     </div>
                     <div className="col-12 col-md-5 m-1">
-                        <RenderComments comments={this.props.comments} />
+                        <RenderComments cms={this.props.comments} />
                         <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span> Submit Comments</Button>
                     </div>
                     <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                         <ModalHeader toggle={this.toggleModal}>Submit Comments</ModalHeader>
                         <ModalBody>
-                            <CommentForm />
+                            <CommentForm dishId={this.props.dish.id} addComment={this.props.addComment} />
                         </ModalBody>
                     </Modal>
                 </div>
