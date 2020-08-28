@@ -7,12 +7,13 @@ import {
 } from 'reactstrap';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
+import { Loading } from './LoadingComponent';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length >= len);
 
-function RenderDish({ dish }) {
+function RenderDish({ dish, isLoading, errMess }) {
     if (dish == null || dish == undefined) {
         return (
             <div></div>
@@ -162,35 +163,56 @@ class DishDetail extends Component {
     }
 
     render() {
-        return (
-            <div className="container">
-                <div className="row">
-                    <Breadcrumb>
-                        <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
-                        <BreadcrumbItem active>{this.props.dish.name}</BreadcrumbItem>
-                    </Breadcrumb>
-                    <div className="col-12">
-                        <h3>{this.props.dish.name}</h3>
-                        <hr />
+        if (this.props.isLoading) {
+            return (
+                <div className="container">
+                    <div className="row">
+                        <Loading />
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-12 col-md-5 m-1">
-                        <RenderDish dish={this.props.dish} />
+            );
+        }
+        else if (this.props.errMess) {
+            return (
+                <div className="container">
+                    <div className="row">
+                        <h4>{this.props.errMess}</h4>
                     </div>
-                    <div className="col-12 col-md-5 m-1">
-                        <RenderComments cms={this.props.comments} />
-                        <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span> Submit Comments</Button>
-                    </div>
-                    <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-                        <ModalHeader toggle={this.toggleModal}>Submit Comments</ModalHeader>
-                        <ModalBody>
-                            <CommentForm dishId={this.props.dish.id} addComment={this.props.addComment} />
-                        </ModalBody>
-                    </Modal>
                 </div>
-            </div>
-        );
+            );
+        }
+        else {
+            return (
+                <div className="container">
+                    <div className="row">
+                        <Breadcrumb>
+                            <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                            <BreadcrumbItem active>{this.props.dish.name}</BreadcrumbItem>
+                        </Breadcrumb>
+                        <div className="col-12">
+                            <h3>{this.props.dish.name}</h3>
+                            <hr />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12 col-md-5 m-1">
+                            <RenderDish dish={this.props.dish} isLoading={this.props.isLoading}
+                                errMess={this.props.errMess} />
+                        </div>
+                        <div className="col-12 col-md-5 m-1">
+                            <RenderComments cms={this.props.comments} />
+                            <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span> Submit Comments</Button>
+                        </div>
+                        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+                            <ModalHeader toggle={this.toggleModal}>Submit Comments</ModalHeader>
+                            <ModalBody>
+                                <CommentForm dishId={this.props.dish.id} addComment={this.props.addComment} />
+                            </ModalBody>
+                        </Modal>
+                    </div>
+                </div>
+            );
+        }
     }
 
 }
